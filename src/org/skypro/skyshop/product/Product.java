@@ -1,6 +1,8 @@
 package org.skypro.skyshop.product;
 
-public class Product {
+import org.skypro.skyshop.search.Searchable;
+
+public class Product implements Searchable {
     private final String name;
     private final int price;
 
@@ -15,5 +17,15 @@ public class Product {
 
     public int getPrice() {
         return price;
+    }
+
+    @Override
+    public String getSearchTerm() {
+        return name;
+    }
+
+    @Override
+    public String getContentType() {
+        return "PRODUCT";
     }
 }
