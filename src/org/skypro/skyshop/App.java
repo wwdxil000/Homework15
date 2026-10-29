@@ -37,7 +37,7 @@ public class App {
 
         for (Searchable item : results) {
             if (item != null) {
-                System.out.println(item.getContentType() + ": " + item.getSearchTerm());
+                System.out.println(item.getStringRepresentation());
             }
         }
     }
