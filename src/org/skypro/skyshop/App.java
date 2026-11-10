@@ -1,44 +1,38 @@
 package org.skypro.skyshop;
 
 import org.skypro.skyshop.article.Article;
-import org.skypro.skyshop.basket.ProductBasket;
-import org.skypro.skyshop.product.Product;
+import org.skypro.skyshop.product.DiscountedProduct;
+import org.skypro.skyshop.product.SimpleProduct;
+import org.skypro.skyshop.search.BestResultNotFound;
 import org.skypro.skyshop.search.SearchEngine;
 import org.skypro.skyshop.search.Searchable;
 
 public class App {
     public static void main(String[] args) {
-
-        ProductBasket basket = new ProductBasket();
-        basket.addProduct(new Product("Яблоко", 50));
-        basket.addProduct(new Product("Хлеб", 40));
-        basket.addProduct(new Product("Молоко", 80));
-        basket.addProduct(new Product("Сыр", 200));
-        basket.addProduct(new Product("Масло", 150));
-        basket.addProduct(new Product("Сок", 90));
-
-        basket.printBasket();
-        System.out.println(basket.getTotalPrice());
-        System.out.println(basket.containsProductByName("Сыр"));
-        System.out.println(basket.containsProductByName("Арбуз"));
-
-        basket.clear();
-        basket.printBasket();
-        System.out.println(basket.getTotalPrice());
-        System.out.println(basket.containsProductByName("Сыр"));
-
+        try { new SimpleProduct(null, 100); } catch (IllegalArgumentException e) { System.out.println(e.getMessage()); }
+        try { new SimpleProduct("   ", 100); } catch (IllegalArgumentException e) { System.out.println(e.getMessage()); }
+        try { new SimpleProduct("Товар", 0); } catch (IllegalArgumentException e) { System.out.println(e.getMessage()); }
+        try { new SimpleProduct("Товар", -50); } catch (IllegalArgumentException e) { System.out.println(e.getMessage()); }
+        try { new DiscountedProduct("Товар", 0, 10); } catch (IllegalArgumentException e) { System.out.println(e.getMessage()); }
+        try { new DiscountedProduct("Товар", 1000, -5); } catch (IllegalArgumentException e) { System.out.println(e.getMessage()); }
+        try { new DiscountedProduct("Товар", 1000, 101); } catch (IllegalArgumentException e) { System.out.println(e.getMessage()); }
 
         SearchEngine engine = new SearchEngine(10);
-        engine.add(new Product("Ноутбук", 50000));
-        engine.add(new Product("Мышь", 1500));
-        engine.add(new Article("Обзор ноутбуков", "Лучшие модели 2024 года"));
+        engine.add(new SimpleProduct("Игровая мышь", 2000));
+        engine.add(new Article("Обзор", "Мышь мышь мышь - лучший выбор"));
 
-        Searchable[] results = engine.search("ноутбук");
+        try {
+            Searchable best = engine.findBestMatch("мышь");
+            System.out.println(best.getStringRepresentation());
+        } catch (BestResultNotFound e) {
+            System.out.println(e.getMessage());
+        }
 
-        for (Searchable item : results) {
-            if (item != null) {
-                System.out.println(item.getStringRepresentation());
-            }
+        try {
+            Searchable best = engine.findBestMatch("клавиатура");
+            System.out.println(best.getStringRepresentation());
+        } catch (BestResultNotFound e) {
+            System.out.println(e.getMessage());
         }
     }
 }
